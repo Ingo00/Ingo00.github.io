@@ -24,9 +24,12 @@ window.onload = function init()
         vec2(  1, -1 )
     ];
 
-    // Change the initial point p to be far outside the triangle
-    var p = vec2(100, 100);  // Point far outside the triangle
+    // Specify a starting point p for our iterations
+    // p must lie inside any set of three vertices
 
+    var u = add( vertices[0], vertices[1] );
+    var v = add( vertices[0], vertices[2] );
+    var p = scale( 0.25, add( u, v ) );
 
     // And, add our initial point into our array of points
 
