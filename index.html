@@ -1,12 +1,31 @@
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+    <meta charset="utf-8">
+    <title>Sierpinski Gasket</title>
+    <script src="webgl-utils.js"></script>
+    <script src="MV.js"></script>
+    <script src="initShaders.js"></script>
+    <script src="gasket1.js"></script>
+
+    <!-- Vertex Shader -->
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 vPosition;
+        void main() {
+            gl_PointSize = 1.0;
+            gl_Position = vPosition;
+        }
+    </script>
+
+    <!-- Fragment Shader -->
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+        void main() {
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);  // red color
+        }
+    </script>
 </head>
 <body>
-  <h1>Dæmi 1 a)</h1>
-  <a href="gasket1.js">gasket1.js</a></body>
-  <h1>Dæmi 1 b)</h1>
-  <a href="gasket1b.js">gasket1b.js</a></body>
+    <canvas id="gl-canvas" width="512" height="512"></canvas>
+</body>
 </html>
