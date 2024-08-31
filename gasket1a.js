@@ -1,4 +1,5 @@
 "use strict";
+//    Ingólfur Bjarni Elíasson, ágúst 2024
 
 var gl;
 var points;

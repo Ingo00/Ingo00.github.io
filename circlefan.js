@@ -2,7 +2,7 @@
 //    Sýnidæmi í Tölvugrafík
 //     Teikna nálgun á hring sem TRIANGLE_FAN
 //
-//    Hjálmtýr Hafsteinsson, ágúst 2024
+//    Ingólfur Bjarni Elíasson, ágúst 2024
 /////////////////////////////////////////////////////////////////
 var canvas;
 var gl;
