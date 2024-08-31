@@ -3,7 +3,7 @@
 var gl;
 var points;
 
-var NumPoints = 5000;
+var NumPoints = 1000000;
 
 window.onload = function init()
 {
@@ -40,10 +40,20 @@ window.onload = function init()
     // last point and a randomly chosen vertex
 
     for ( var i = 0; points.length < NumPoints; ++i ) {
-        var j = Math.floor(Math.random() * 3);
-        p = add( points[i], vertices[j] );
-        p = scale( 0.5, p );
-        points.push( p );
+      var rand = Math.random();
+      var j;
+
+      if (rand < 0.9) {
+          j = 0;  // 90% chance of choosing vertex 0
+      } else if (rand < 0.95) {
+          j = 1;  // 5% chance of choosing vertex 1
+      } else {
+          j = 2;  // 5% chance of choosing vertex 2
+      }
+
+      p = add(points[i], vertices[j]);
+      p = scale(0.5, p);
+      points.push(p);
     }
 
     //
