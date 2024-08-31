@@ -43,6 +43,13 @@ window.onload = function init() {
     gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(vPosition);
 
+    // Set up the slider to control the number of points
+    document.getElementById("pointsSlider").oninput = function(event) {
+      numCirclePoints = event.target.value;
+      document.getElementById("pointsValue").innerText = numCirclePoints;
+      updateCircle();  // Update circle based on new slider value
+    };
+
     render();
 }
 
@@ -61,12 +68,18 @@ function createCirclePoints( cent, rad, k )
     }
 }
 
+// Function to update the circle when the slider is moved
+function updateCircle() {
+  createCirclePoints(center, radius, numCirclePoints);
+
+  // Update the buffer data with new points
+  gl.bufferData(gl.ARRAY_BUFFER, flatten(points), gl.STATIC_DRAW);
+  render();
+}
+
 function render() {
+  gl.clear(gl.COLOR_BUFFER_BIT);
 
-    gl.clear( gl.COLOR_BUFFER_BIT );
-
-    // Draw circle using Triangle Fan
-    gl.drawArrays( gl.TRIANGLE_FAN, 0, numCirclePoints+2 );
-
-    window.requestAnimFrame(render);
+  // Draw the circle using TRIANGLE_FAN
+  gl.drawArrays(gl.TRIANGLE_FAN, 0, points.length);
 }
