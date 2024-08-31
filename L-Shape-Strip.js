@@ -2,7 +2,7 @@
 //    Sýnisforrit í Tölvugrafík
 //     L-laga form teiknað með TRIANGLE-STRIP
 //
-//    Hjálmtýr Hafsteinsson, ágúst 2024
+//    Ingólfur Bjarni Elíasson, ágúst 2024
 //////////////////////////////////////////////////////////////////////
 var gl;
 
