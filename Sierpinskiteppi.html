@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L-Shape with TRIANGLE_STRIP</title>
+    <script src="webgl-utils.js"></script>
+    <script src="MV.js"></script>
+    <script src="initShaders.js"></script>
+    <script src="Sierpinski.js"></script>
+
+    <!-- Vertex Shader -->
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 vPosition;
+        void main() {
+            gl_PointSize = 1.0;
+            gl_Position = vPosition;
+        }
+    </script>
+
+    <!-- Fragment Shader -->
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+        void main() {
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);  // Red color
+        }
+    </script>
+</head>
+<body>
+    <canvas id="gl-canvas" width="512" height="512"></canvas>
+</body>
+</html>

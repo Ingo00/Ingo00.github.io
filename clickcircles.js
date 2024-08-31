@@ -41,7 +41,7 @@ window.onload = function init() {
         var t = vec2(2 * e.offsetX / canvas.width - 1, 2 * (canvas.height - e.offsetY) / canvas.height - 1);
 
         // Generate random radius
-        var radius = Math.random() * 0.3 + 0.02; // Radius will vary between 0.02 and 0.32
+        var radius = Math.random() * 0.25 + 0.02; // Radius will vary between 0.02 and 0.27
 
         // Create the circle points and add them to the buffer
         createCircle(t, radius);
