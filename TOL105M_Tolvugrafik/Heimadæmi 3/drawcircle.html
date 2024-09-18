@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Draw Circle with Movement</title>
+    <script src="webgl-utils.js"></script>
+    <script src="MV.js"></script>
+    <script src="initShaders.js"></script>
+    <script src="drawCircle.js"></script>
+
+    <!-- Vertex Shader -->
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 vPosition;
+
+        void main() {
+            gl_Position = vPosition;
+        }
+    </script>
+
+    <!-- Fragment Shader -->
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+
+        uniform vec2 resolution;
+        uniform float time;
+
+        void main() {
+            // Convert fragment coordinates from screen to normalized device coordinates (-1 to 1)
+            vec2 st = gl_FragCoord.xy / resolution * 2.0 - 1.0;
+            st.x *= resolution.x / resolution.y;  // Correct aspect ratio
+
+            // Update st.x for horizontal movement and st.y for vertical oscillation
+            st.x += 0.5 * sin(time * 0.001);
+            st.y += 0.3 * sin(time * 0.002);
+
+            // Draw a circle with radius 0.5 at the center (0,0)
+            float r = length(st);
+            vec3 color = vec3(1.0, 0.0, 0.0);  // Set circle color to red
+
+            // Apply smooth edge for the circle
+            float alpha = smoothstep(0.5, 0.495, r);
+            gl_FragColor = vec4(color, alpha);
+        }
+    </script>
+</head>
+<body>
+    <canvas id="gl-canvas" width="512" height="512"></canvas>
+</body>
+</html>

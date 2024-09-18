@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Sierpinski Gasket</title>
+    <script src="webgl-utils.js"></script>
+    <script src="MV.js"></script>
+    <script src="initShaders.js"></script>
+    <script src="gasket1.js"></script>
+
+    <!-- Vertex Shader -->
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 vPosition;
+        uniform vec2 uOffset;  // Offset for moving the triangle
+        uniform float uScale;  // Scale factor for zooming
+
+        void main() {
+            gl_PointSize = 1.0;
+            gl_Position = vec4((vPosition.xy * uScale) + uOffset, 0.0, 1.0);
+        }
+    </script>
+
+    <!-- Fragment Shader -->
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+        uniform vec3 uColor;  // Color uniform for dynamically changing color
+
+        void main() {
+            gl_FragColor = vec4(uColor, 1.0);  // Use the uniform color for the fragment
+        }
+    </script>
+</head>
+<body>
+    <canvas id="gl-canvas" width="512" height="512"></canvas>
+</body>
+</html>
