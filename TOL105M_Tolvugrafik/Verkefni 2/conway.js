@@ -182,7 +182,7 @@ function Grid(numRows) {
                 grid_secondary[i][j] = [];
                 nextGrid[i][j] = []; // Initialize nextGrid for each row
                 for (var k = 0; k < rows; k++) {
-                    var isAlive = Math.random() > 0.78; // 22% chance to be alive at start
+                    var isAlive = Math.random() > 0.79; // 21% chance to be alive at start
                     grid[i][j][k] = isAlive ? state.GROWING : state.DEAD;
                     if (isAlive)
                         stacks[state.GROWING].push([i, j, k]); // Initially growing if alive
