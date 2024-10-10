@@ -38,7 +38,7 @@ var posOffsetLoc;
 var scaleLoc;
 var rowLoc;
 
-// Grid will be (R x R x R) where R=numRows
+// Grid will be fixed at (10 x 10 x 10)
 var numRows = 10;
 var grid;
 
@@ -92,19 +92,6 @@ window.onload = function init() {
 
     createKeyboardMouseListeners();
 
-    // Set-up slider for grid-size
-    document.getElementById("slider").onchange = function (event) {
-        numRows = event.target.value;
-        document.getElementById("slider-value").textContent = numRows;
-        grid = Grid(numRows);
-        grid.init();
-    };
-
-    // Attach Repopulate button
-    document.getElementById("repopulate-button").onclick = function (event) {
-        grid.Repopulate();
-    };
-
     render();
 };
 
@@ -124,7 +111,6 @@ function Timer() {
     var frameHistory = new Array(40);
     var fhStart = 0;
     var fhEnd = 99;
-    var fpsElement = document.getElementById('fps-counter');
 
     function tick() {
         now = window.performance.now();
@@ -141,7 +127,6 @@ function Timer() {
         fhStart = (fhStart + 1) % 100;
         fhEnd = (fhEnd + 1) % 100;
         frameHistory[fhEnd] = now;
-        fpsElement.textContent = Math.ceil(1000.0 * frameHistory.length / (now - frameHistory[fhStart]));
     }
 
     function done() {
@@ -165,6 +150,7 @@ function Grid(numRows) {
     var rows = numRows;
     var grid = [];
     var grid_secondary = [];
+    var nextGrid = []; // To store the new state
 
     var cubeFill = 0.88;
     var timer = Timer();
@@ -190,32 +176,27 @@ function Grid(numRows) {
         for (var i = 0; i < rows; i++) {
             grid[i] = [];
             grid_secondary[i] = [];
+            nextGrid[i] = []; // Initialize nextGrid
             for (var j = 0; j < rows; j++) {
                 grid[i][j] = [];
                 grid_secondary[i][j] = [];
+                nextGrid[i][j] = []; // Initialize nextGrid for each row
                 for (var k = 0; k < rows; k++) {
-                    var isAlive = Math.random() > 0.78;
+                    var isAlive = Math.random() > 0.78; // 22% chance to be alive at start
                     grid[i][j][k] = isAlive ? state.GROWING : state.DEAD;
                     if (isAlive)
-                        stacks[state.GROWING].push([i, j, k]);
-                    grid_secondary[i][j][k] = state.DEAD;
+                        stacks[state.GROWING].push([i, j, k]); // Initially growing if alive
+                    grid_secondary[i][j][k] = state.DEAD; // Setup secondary grid
+                    nextGrid[i][j][k] = state.DEAD; // Initialize nextGrid as DEAD
                 }
             }
         }
         gl.uniform1f(rowLoc, numRows);
     }
 
-    function Repopulate() {
-        grid = [];
-        grid_secondary = [];
-        stacks[state.DYING] = [];
-        stacks[state.GROWING] = [];
-        stacks[state.ADULT] = [];
-        init();
-    }
-
     function calculateNeighbours() {
         var neighbours = grid_secondary;
+        // Update neighbours for all cells
         for (var i = 0; i < rows; i++) {
             for (var j = 0; j < rows; j++) {
                 for (var k = 0; k < rows; k++) {
@@ -224,6 +205,7 @@ function Grid(numRows) {
                     if (grid[i][j][k] == state.GROWING) grid[i][j][k] = state.ADULT;
                     if (grid[i][j][k] == state.DYING) grid[i][j][k] = state.DEAD;
 
+                    // Check 26 neighbors
                     for (var di = -1; di <= 1; di++) {
                         for (var dj = -1; dj <= 1; dj++) {
                             for (var dk = -1; dk <= 1; dk++) {
@@ -246,13 +228,12 @@ function Grid(numRows) {
         stacks[state.ADULT] = [];
         stacks[state.DYING] = [];
         stacks[state.GROWING] = [];
-        var nextGrid = grid_secondary;
 
         for (var i = 0; i < rows; i++) {
             for (var j = 0; j < rows; j++) {
                 for (var k = 0; k < rows; k++) {
-                    var n = nextGrid[i][j][k];
-                    var prev = grid[i][j][k];
+                    var n = grid_secondary[i][j][k]; // Neighbor count
+                    var prev = grid[i][j][k]; // Previous state
 
                     if (prev == state.ADULT) {
                         if (n < ENV_MIN || ENV_MAX < n) {
@@ -281,8 +262,8 @@ function Grid(numRows) {
             calculateNeighbours();
             calculateCellStates();
             timer.cooldown();
-            grid_secondary = grid;
-            grid = grid_secondary;
+            grid_secondary = JSON.parse(JSON.stringify(grid)); // Copy grid state
+            grid = JSON.parse(JSON.stringify(nextGrid)); // Move nextGrid to grid
         }
     }
 
@@ -291,18 +272,21 @@ function Grid(numRows) {
         var s = cubeFill / rows;
         var t = timer.t();
 
+        // Render shrinking cubes (dying)
         gl.uniform1f(scaleLoc, s * t);
         for (var i = 0; i < stacks[state.DYING].length; i++) {
             gl.uniform3fv(posOffsetLoc, flatten(stacks[state.DYING][i]));
             gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
         }
 
+        // Render growing cubes (coming to life)
         gl.uniform1f(scaleLoc, s * (1 - t));
         for (var i = 0; i < stacks[state.GROWING].length; i++) {
             gl.uniform3fv(posOffsetLoc, flatten(stacks[state.GROWING][i]));
             gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
         }
 
+        // Render stable cubes (those that remain alive)
         gl.uniform1f(scaleLoc, s);
         for (var i = 0; i < stacks[state.ADULT].length; i++) {
             gl.uniform3fv(posOffsetLoc, flatten(stacks[state.ADULT][i]));
@@ -314,7 +298,7 @@ function Grid(numRows) {
         init: init,
         update: update,
         render: render,
-        Repopulate: Repopulate
+        Repopulate: init // Repopulate using the init function
     };
 }
 
