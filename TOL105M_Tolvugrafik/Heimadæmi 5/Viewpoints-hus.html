@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Viewpoints-hus</title>
+    <script src="webgl-utils.js"></script>
+    <script src="MV.js"></script>
+    <script src="initShaders.js"></script>
+    <script src="Viewpoints-hus.js"></script>
+
+    <!-- Vertex Shader -->
+    <script id="vertex-shader" type="x-shader/x-vertex">
+
+      attribute  vec4 vPosition;
+      uniform mat4 projection;
+      uniform mat4 modelview;
+      void main()
+      {
+          gl_Position = projection * modelview * vPosition;
+      }
+      </script>
+
+    <!-- Fragment Shader -->
+    <script id="fragment-shader" type="x-shader/x-fragment">
+      precision mediump float;
+      uniform vec4 fColor;
+      void main()
+      {
+          gl_FragColor = fColor;
+      }
+      </script>
+</head>
+
+<body>
+  <h4>Sláið á 1, 2, ..., 8 til að skipta um sjónarhorn.  Núverandi sjónarhorn er fyrir neðan myndina</h4>
+  <h4>Örvalyklar hækka og lækka staðsetningu áhorfanda (fer eftir sjónarhorni)</h4>
+  <canvas id="gl-canvas" width="700" height="700">
+  <div id="Viewpoint">1: Fjarlægt sjónarhorn</div>
+  <div id="Height">Viðbótarhæð: 8</div>
+  <br>
+  </canvas></body>
+</html>
