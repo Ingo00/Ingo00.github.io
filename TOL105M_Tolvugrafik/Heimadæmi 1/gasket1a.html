@@ -10,28 +10,18 @@
 
     <!-- Vertex Shader -->
     <script id="vertex-shader" type="x-shader/x-vertex">
-
-        attribute  vec4 vPosition;
-
-        uniform mat4 projection;
-        uniform mat4 modelview;
-
-        void main()
-        {
-            gl_Position = projection * modelview * vPosition;
+        attribute vec4 vPosition;
+        void main() {
+            gl_PointSize = 1.0;
+            gl_Position = vPosition;
         }
-        </script>
+    </script>
 
     <!-- Fragment Shader -->
     <script id="fragment-shader" type="x-shader/x-fragment">
-
         precision mediump float;
-
-        uniform vec4 fColor;
-
-        void main()
-        {
-            gl_FragColor = fColor;
+        void main() {
+            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);  // red color
         }
     </script>
 </head>

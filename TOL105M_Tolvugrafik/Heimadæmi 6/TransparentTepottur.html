@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Transparent Tepottur</title>
+    <script src="webgl-utils.js"></script>
+    <script src="initShaders.js"></script>
+    <script src="MV.js"></script>
+    <script src="teapotData.js"></script>
+    <script src="TransparentTepottur.js"></script>
+
+    <!-- Vertex Shader -->
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 vPosition;
+        attribute vec4 vNormal;
+        varying vec3 N, L, E;
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
+        uniform vec4 lightPosition;
+        uniform mat3 normalMatrix;
+
+        void main() {
+            vec3 pos = (modelViewMatrix * vPosition).xyz;
+
+            if(lightPosition.w == 0.0)
+                L = normalize(lightPosition.xyz);
+            else
+                L = normalize(lightPosition.xyz - pos);
+
+            E = -normalize(pos);
+            N = normalize(normalMatrix * vNormal.xyz);
+            gl_Position = projectionMatrix * modelViewMatrix * vPosition;
+        }
+    </script>
+
+    <!-- Fragment Shader -->
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+        uniform vec4 ambientProduct;
+        uniform vec4 diffuseProduct;
+        uniform vec4 specularProduct;
+        uniform float shininess;
+        uniform float discardThreshold;
+        varying vec3 N, L, E;
+
+        void main() {
+            vec3 H = normalize(L + E);
+            vec4 ambient = ambientProduct;
+            vec4 diffuse = max(dot(L, N), 0.0) * diffuseProduct;
+            vec4 specular = specularProduct * pow(max(dot(N, H), 0.0), shininess);
+
+            if (dot(L, N) < 0.0)
+                specular = vec4(0.0, 0.0, 0.0, 1.0);
+
+            vec4 color = ambient + diffuse + specular;
+            color.a = 1.0;
+            if (length(color) > discardThreshold) {
+                discard;
+            } else {
+                gl_FragColor = color;
+            }
+        }
+    </script>
+</head>
+<body>
+    <canvas id="gl-canvas" width="600" height="600"></canvas>
+</body>
+</html>
